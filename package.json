@@ -1,0 +1,18 @@
+{
+  "name": "passwordmanager",
+  "version": "1.0.0",
+  "description": "Small password manager",
+  "main": "./BackEnd/index.js",
+  "scripts": {
+    "test": "nodemon ./BackEnd/index.js",
+    "start": "node ./BackEnd/index.js",
+    "web": "cd FrontEnd && http-server -p 80"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jsonwebtoken": "^5.5.4",
+    "mongoose": "^4.3.5",
+    "restify": "^4.0.3"
+  }
+}
