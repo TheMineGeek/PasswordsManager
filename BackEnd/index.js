@@ -7,6 +7,7 @@ var mongoose = require('mongoose');
 var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
 var fs = require('fs');
+var config = require('./config');
 
 /** Env var */
 
@@ -29,7 +30,17 @@ var Password = require('./models/Password');
 
 /** Resitfy conf */
 
-var app = restify.createServer();
+var app;
+if(config.certificate && config.key) {
+  app = restify.createServer({
+    certificate: fs.readFileSync(config.certificate),
+    key: fs.readFileSync(config.key),
+    name: 'MyApp',
+  });
+}
+else {
+  app = restify.createServer();
+}
 
 app.use(restify.queryParser());
 app.use(restify.bodyParser());

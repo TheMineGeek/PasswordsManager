@@ -1,3 +1,5 @@
+var apiPath = 'http://localhost:8080/';
+
 var app = angular.module('passwordManager', []).run(function ($rootScope) {
   $rootScope.token = null;
   $rootScope.connectDiv = false;
@@ -20,7 +22,7 @@ app.controller('ConnectController', function ($scope, $rootScope) {
       };
 
       $.ajax({
-        url: 'http://localhost:8080/connect',
+        url: apiPath +'connect',
         type: 'POST',
         crossDomain: true,
         data: data,
@@ -54,7 +56,7 @@ app.controller('PasswordController', function ($scope, $rootScope) {
   $rootScope.init = $scope.init;
   $scope.getPasswords = function () {
     $.ajax({
-      url: 'http://localhost:8080/password',
+      url: apiPath +'password',
       type: 'GET',
       data: $rootScope.token,
       success: function (data) {
@@ -78,7 +80,7 @@ app.controller('PasswordController', function ($scope, $rootScope) {
   $scope.remove = function (id) {
     console.log(id);
     $.ajax({
-      url: 'http://localhost:8080/password',
+      url: apiPath +'password',
       type: 'DELETE',
       crossDomain: true,
       data: { token: $rootScope.token, objectId: id },
@@ -109,7 +111,7 @@ app.controller('newPasswordController', function ($scope, $rootScope) {
       };
 
       $.ajax({
-        url: 'http://localhost:8080/password',
+        url: apiPath +'password',
         type: 'PUT',
         crossDomain: true,
         data: data,
