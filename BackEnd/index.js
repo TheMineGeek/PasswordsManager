@@ -45,11 +45,7 @@ mongoose.connect('mongodb://localhost:27017/passwordManager');
 
 /** Routes */
 
-app.get('/', function(req, res) {
-  res.send('ok');
-});
-
-app.post('/user', function (req, res) {
+app.put('/user', function (req, res) {
   var _password = encrypt(req.params.password, req.params.password);
 
   var user = new User({
@@ -94,6 +90,9 @@ app.post('/connect', function (req, res) {
           });
         }
       }
+      else {;
+       res.send(401);        
+      }
     }
     else {
       res.send(401);
@@ -117,8 +116,6 @@ app.put('/password', function (req, res) {
         ownerID: mongoose.Types.ObjectId(decoded._id)
       });
 
-      console.log(password);
-
       password.save(function (err) {
         if (err) throw err;
 
@@ -134,9 +131,7 @@ app.put('/password', function (req, res) {
 app.get('/password', function (req, res) {
   var token = req.headers['x-access-token'] || req.getQuery();
   if (token) {
-    jwt.verify(token, jwt_config.pubkey, { algorithms: [jwt_config.algorithm] }, function (err, decoded) {
-      if (err) throw err;
-
+    decode(token, function (decoded) {
       Password.find({ ownerID: mongoose.Types.ObjectId(decoded._id) }, function (err, elements) {
         var passwords = [];
 
@@ -146,6 +141,28 @@ app.get('/password', function (req, res) {
         }
         res.json(passwords);
       });
+    });
+  }
+  else {
+    res.send(400);
+  }
+});
+
+app.post('/password', function (req, res) {
+
+});
+
+app.del('/password', function (req, res) {
+  var token = req.params.token;
+  if (token) {
+    decode(token, function (decoded) {
+      console.log(decoded);
+      if (req.params.objectId) {
+        Password.findOne({ _id: req.params.objectId, ownerID: decoded._id }).remove(function (err) {
+          if (err) throw err;
+          res.send('Password deleted');
+        })
+      }
     });
   }
   else {
@@ -178,4 +195,11 @@ function decrypt(text, password) {
   var dec = decipher.update(text, 'hex', 'utf8');
   dec += decipher.final('utf8');
   return dec;
+}
+
+function decode(token, callback) {
+  jwt.verify(token, jwt_config.pubkey, { algorithms: [jwt_config.algorithm] }, function (err, decoded) {
+    if (err) throw err;
+    if (callback) callback(decoded);
+  });
 }
