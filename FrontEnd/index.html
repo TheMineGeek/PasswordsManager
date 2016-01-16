@@ -5,15 +5,16 @@
   <link rel="stylesheet" href="css/materialize.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-  <script src="js/jquery.js"></script>
+  <script src="http://code.jquery.com/jquery-1.12.0.js"></script>
   <script src="js/angular.min.js"></script>
   <script src="js/materialize.js"></script>
   <script src="js/app.js"></script>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Password Manager</title>
 </head>
 
-<body>
+<body ng-app="passwordManager">
   <nav class="light-blue lighten-1" role="navigation">
     <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Gestionnaire de mots de passe</a>
       <!--<ul class="left hide-on-med-and-down">
@@ -26,51 +27,74 @@
       <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>-->
     </div>
   </nav>
-
-  <div class="container">
+  <div class="container" ng-controller="ConnectController" ng-hide="connect">
     <div class="row">
       <form class="col s12">
         <div class="row">
-          <div class="card col s6 offset-s3 white">
+          <div class="card col s10 offset-s1 m6 offset-m3 white">
             <div class="card-content black-text">
               <span class="card-title center">Se connecter</span>
               <div class="row">
                 <div class="input-field col s8">
                   <i class="material-icons prefix">account_circle</i>
-                  <input type="text" id="username" class="validate">
+                  <input type="text" id="username" class="validate" ng-model="username">
                   <label for="username">Nom d'utilisateur</label>
                 </div>
                 <div class="input-field col s8">
                   <i class="material-icons prefix">vpn_key</i>
-                  <input type="password" id="password" class="validate">
+                  <input type="password" id="password" class="validate" ng-model="password">
                   <label for="password">Mot de passe</label>
                 </div>
               </div>
             </div>
             <div class="card-action">
-              <a href="#">Connexion<a>
+              <a ng-click="connection()" style="cursor: pointer">Connexion</a>
             </div>
           </div>
         </div>
       </form>
     </div>
   </div>
-  <!--<div class="section no-pad-bot" id="index-banner">
-    <div class="container">
-      <br>
-      <br>
-      <h1 class="header center orange-text">Starter Template</h1>
-      <div class="row center">
-        <h5 class="header col s12 light">A modern responsive front-end framework based on Material Design</h5>
-      </div>
-      <div class="row center">
-        <a href="http://materializecss.com/getting-started.html" id="download-button" class="btn-large waves-effect waves-light orange">Get Started</a>
+  
+  <div ng-controller="PasswordController" ng-hide="passwordsdiv">
+    <div class="row">
+      <div class="col s12 m4 l3" ng-repeat="password in passwords">
+        <div class="card white">
+          <div class="card-content black-text">
+            <div class="row">
+              <div class="col s6 m5">
+                <p>Nom d'utilisateur :</p>
+              </div>
+              <div class="col s4">
+                <p>{{password.username}}</p>
+              </div>
             </div>
-            <br>
-            <br>
-
+            <div class="row" ng-init="passworddiv = true" ng-hide="passworddiv">
+              <div class="col s6 m5">
+                <p>Mot de passe :</p>
+              </div>
+              <div class="col s4">
+                <p>{{password.password}}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col s6 m5">
+                <p>Site :</p>
+              </div>
+              <div class="col s4">
+                <a href="{{password.website}}">{{password.website}}</a>
+              </div>
+            </div>
           </div>
-        </div>-->
+          <div class="card-action">
+            <a href="#" ng-click="passworddiv = false; show=true; hide=true;" ng-hide="show">Voir le mot de passe</a>
+            <a href="#" ng-click="passworddiv = true; show=false; hide=false;" ng-show="hide">Cacher le mot de passe</a>
+            <a href="#">Supprimer</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>

@@ -34,11 +34,21 @@ var app = restify.createServer();
 app.use(restify.queryParser());
 app.use(restify.bodyParser());
 
+app.use(restify.CORS({
+  credentials: true,
+  headers: ['*']
+}));
+
 /** Mongo connection */
 
 mongoose.connect('mongodb://localhost:27017/passwordManager');
 
 /** Routes */
+
+app.get('/', function(req, res) {
+  res.send('ok');
+});
+
 app.post('/user', function (req, res) {
   var _password = encrypt(req.params.password, req.params.password);
 
@@ -96,10 +106,51 @@ app.put('/password', function (req, res) {
 
   jwt.verify(token, jwt_config.pubkey, { algorithms: [jwt_config.algorithm] }, function (err, decoded) {
     if (err) throw err;
-    console.log(decoded); // bar
-    res.send(decoded);
-  });
 
+    if (req.params.password && req.params.website && req.params.username) {
+      var _password = encrypt(req.params.password, decoded.password);
+
+      var password = new Password({
+        username: req.params.username,
+        password: _password,
+        website: req.params.website,
+        ownerID: mongoose.Types.ObjectId(decoded._id)
+      });
+
+      console.log(password);
+
+      password.save(function (err) {
+        if (err) throw err;
+
+        res.send('Password added');
+      })
+    }
+    else {
+      res.send(400);
+    }
+  });
+});
+
+app.get('/password', function (req, res) {
+  var token = req.headers['x-access-token'] || req.getQuery();
+  if (token) {
+    jwt.verify(token, jwt_config.pubkey, { algorithms: [jwt_config.algorithm] }, function (err, decoded) {
+      if (err) throw err;
+
+      Password.find({ ownerID: mongoose.Types.ObjectId(decoded._id) }, function (err, elements) {
+        var passwords = [];
+
+        for (var element in elements) {
+          elements[element].password = decrypt(elements[element].password, decoded.password);
+          passwords[passwords.length] = elements[element];
+        }
+        res.json(passwords);
+      });
+    });
+  }
+  else {
+    res.send(400);
+  }
 });
 
 var server = app.listen(8080, function () {
