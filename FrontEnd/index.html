@@ -35,12 +35,12 @@
             <div class="card-content black-text">
               <span class="card-title center">Se connecter</span>
               <div class="row">
-                <div class="input-field col s12 m8">
+                <div class="input-field col s8">
                   <i class="material-icons prefix">account_circle</i>
                   <input type="text" id="username" class="validate" ng-model="username">
                   <label for="username">Nom d'utilisateur</label>
                 </div>
-                <div class="input-field col s12 m8">
+                <div class="input-field col s8">
                   <i class="material-icons prefix">vpn_key</i>
                   <input type="password" id="password" class="validate" ng-model="password">
                   <label for="password">Mot de passe</label>
@@ -49,37 +49,6 @@
             </div>
             <div class="card-action">
               <a ng-click="connection()" style="cursor: pointer">Connexion</a>
-              <a ng-click="showSignup()" class="right" style="cursor: pointer">S'inscrire</a>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-  
-  <div class="container" ng-controller="SignupController" ng-hide="signupDiv">
-    <div class="row">
-      <form class="col s12">
-        <div class="row">
-          <div class="card col s10 offset-s1 m6 offset-m3 white">
-            <div class="card-content black-text">
-              <span class="card-title center">S'inscrire</span>
-              <div class="row">
-                <div class="input-field col s12 m8">
-                  <i class="material-icons prefix">account_circle</i>
-                  <input type="text" id="username" class="validate" ng-model="username">
-                  <label for="username">Nom d'utilisateur</label>
-                </div>
-                <div class="input-field col s12 m8">
-                  <i class="material-icons prefix">vpn_key</i>
-                  <input type="password" id="password" class="validate" ng-model="password">
-                  <label for="password">Mot de passe</label>
-                </div>
-              </div>
-            </div>
-            <div class="card-action">
-              <a ng-click="signup()" style="cursor: pointer">Valider</a>
-              <a ng-click="showConnect()" class="right" style="cursor: pointer">Se connecter</a>
             </div>
           </div>
         </div>
@@ -87,7 +56,7 @@
     </div>
   </div>
 
-  <div ng-controller="PasswordController" ng-hide="passwordsDiv">
+  <div ng-controller="PasswordController" ng-hide="passwordsdiv">
     <div class="row">
       <div class="col s12 m4 l3" ng-repeat="password in passwords">
         <div class="card white">
@@ -100,7 +69,7 @@
                 <p>{{password.username}}</p>
               </div>
             </div>
-            <div class="row" ng-init="passwordDiv = true" ng-hide="passwordDiv">
+            <div class="row" ng-init="passworddiv = true" ng-hide="passwordDiv">
               <div class="col s6 m5">
                 <p>Mot de passe :</p>
               </div>
@@ -118,8 +87,8 @@
             </div>
           </div>
           <div class="card-action">
-            <a href="#" ng-click="passwordDiv = false; show=true; hide=true;" ng-hide="show">Voir</a>
-            <a href="#" ng-click="passwordDiv = true; show=false; hide=false;" ng-show="hide">Cacher</a>
+            <a href="#" ng-click="passworddiv = false; show=true; hide=true;" ng-hide="show">Voir</a>
+            <a href="#" ng-click="passworddiv = true; show=false; hide=false;" ng-show="hide">Cacher</a>
             <a href="#" ng-click="edit(password._id)">Editer</a>
             <a href="#" ng-click="remove(password._id)">Supprimer</a>
           </div>

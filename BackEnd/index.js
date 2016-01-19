@@ -73,7 +73,7 @@ app.put('/user', function (req, res) {
       });
     }
     else {
-      res.send(409);
+      res.send('Username already used');
     }
   });
 });
@@ -130,7 +130,7 @@ app.put('/password', function (req, res) {
       password.save(function (err) {
         if (err) throw err;
 
-        res.send('Password successfuly added');
+        res.send('Password added');
       })
     }
     else {
@@ -167,6 +167,7 @@ app.del('/password', function (req, res) {
   var token = req.params.token;
   if (token) {
     decode(token, function (decoded) {
+      console.log(decoded);
       if (req.params.objectId) {
         Password.findOne({ _id: req.params.objectId, ownerID: decoded._id }).remove(function (err) {
           if (err) throw err;
