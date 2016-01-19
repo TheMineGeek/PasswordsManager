@@ -5,10 +5,22 @@ var app = angular.module('passwordManager', []).run(function ($rootScope) {
   $rootScope.connectDiv = false;
   $rootScope.passwordsDiv = true;
   $rootScope.newPasswordDiv = true;
+  $rootScope.signupDiv = true;
 
   $rootScope.switchController = function () {
     $rootScope.connectDiv = true;
   };
+
+  $rootScope.showConnect = function () {
+    $rootScope.signupDiv = true;
+    $rootScope.connectDiv = false;
+  }
+
+  $rootScope.showSignup = function () {
+    $rootScope.signupDiv = false;
+    $rootScope.connectDiv = true;
+  }
+
 
   $rootScope.init = null;
 });
@@ -22,7 +34,7 @@ app.controller('ConnectController', function ($scope, $rootScope) {
       };
 
       $.ajax({
-        url: apiPath +'connect',
+        url: apiPath + 'connect',
         type: 'POST',
         crossDomain: true,
         data: data,
@@ -46,6 +58,39 @@ app.controller('ConnectController', function ($scope, $rootScope) {
   };
 });
 
+app.controller('SignupController', function ($scope, $rootScope) {
+  $scope.signup = function () {
+    if ($scope.username && $scope.password) {
+      var data = {
+        username: $scope.username,
+        password: $scope.password
+      };
+
+      $.ajax({
+        url: apiPath + 'user',
+        type: 'PUT',
+        crossDomain: true,
+        data: data,
+        success: function (data) {
+          console.log($scope);
+          $scope.username = '';
+          $scope.password = '';
+          $rootScope.showConnect();
+          Materialize.toast('Vous êtes bien inscrit !', 3000, 'rounded');
+        },
+        error: function (err) {
+          if (err.statusText == "Conflict") {
+            Materialize.toast('Nom d\'utilisateur déjà utilisé', 3000, 'rounded');
+          }
+        }
+      });
+    }
+    else {
+      Materialize.toast('Veuillez remplir correctement les champs', 3000, 'rounded');
+    }
+  }
+});
+
 app.controller('PasswordController', function ($scope, $rootScope) {
   $scope.init = function () {
     $scope.getPasswords();
@@ -56,7 +101,7 @@ app.controller('PasswordController', function ($scope, $rootScope) {
   $rootScope.init = $scope.init;
   $scope.getPasswords = function () {
     $.ajax({
-      url: apiPath +'password',
+      url: apiPath + 'password',
       type: 'GET',
       data: $rootScope.token,
       success: function (data) {
@@ -80,7 +125,7 @@ app.controller('PasswordController', function ($scope, $rootScope) {
   $scope.remove = function (id) {
     console.log(id);
     $.ajax({
-      url: apiPath +'password',
+      url: apiPath + 'password',
       type: 'DELETE',
       crossDomain: true,
       data: { token: $rootScope.token, objectId: id },
@@ -106,17 +151,19 @@ app.controller('newPasswordController', function ($scope, $rootScope) {
         username: $scope.username,
         password: $scope.password,
         website: $scope.website,
-        ownerID: $scope._id,
         token: $rootScope.token
       };
 
       $.ajax({
-        url: apiPath +'password',
+        url: apiPath + 'password',
         type: 'PUT',
         crossDomain: true,
         data: data,
         success: function (data) {
           $scope.getPasswords();
+          $scope.username = '';
+          $scope.password = '';
+          $scope.website = '';
         },
         error: function (err) {
           console.log(err);
